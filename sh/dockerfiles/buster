@@ -1,0 +1,18 @@
+FROM debian:buster
+ENV container docker
+STOPSIGNAL SIGRTMIN+3
+
+### install systemd
+RUN apt update && apt -y upgrade
+RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
+RUN apt -y install systemd resolvconf
+RUN systemctl set-default multi-user.target
+
+CMD ["/sbin/init"]
+WORKDIR /host
+
+### install some other packages
+RUN apt install --yes locales rsyslog logrotate cron logwatch vim
+RUN apt purge --yes mailutils mailutils-common &&\
+    apt autoremove --yes &&\
+    apt install --yes msmtp msmtp-mta bsd-mailx

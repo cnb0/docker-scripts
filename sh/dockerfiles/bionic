@@ -1,0 +1,14 @@
+FROM ubuntu:18.04
+
+### install systemd
+RUN apt update && \
+    apt upgrade --yes && \
+    apt install --yes systemd && \
+    systemctl set-default multi-user.target
+
+STOPSIGNAL SIGRTMIN+3
+
+CMD ["/sbin/init"]
+WORKDIR /host
+
+RUN apt install --yes locales rsyslog logrotate cron logwatch ssmtp vim
